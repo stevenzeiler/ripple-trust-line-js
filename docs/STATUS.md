@@ -16,7 +16,7 @@ Historical repo, `legacy` profile. Last commit 2013-12-23. Checked 2026-11-20 (a
 - Whether the trust-line transaction still succeeds against any live ledger.
 
 ## Needs a look in later passes
-- `submit` prints `remote._secret` to the console. This belongs to the security pass; see the hub's security findings. Do not run it with a real key.
+- `submit` prints `remote._secret` to the console, and `set_secret(null, null)` probably does not clear the account's secret **(inference)**. This belongs to the security pass; see the hub's security findings. Do not run it with a real key.
 
 ## Next (only if revived)
 - Choose a real profile (`ts`), rewrite on `xrpl.js`, add tests, then CI.

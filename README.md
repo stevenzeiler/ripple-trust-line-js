@@ -3,7 +3,7 @@
 ![language](https://img.shields.io/badge/language-JavaScript-f7df1e) ![era](https://img.shields.io/badge/era-2013-blue) ![status](https://img.shields.io/badge/status-historical-lightgrey)
 
 > [!NOTE]
-> **Historical project (December 2013).** Written against the early `ripple-lib` `Remote` API, which has since been replaced, and not maintained since. It has no `package.json` and no tests, and I have not run it against the live network. Kept for the record. See [docs/STATUS.md](docs/STATUS.md).
+> **Historical project (December 2013).** Written against the early `ripple-lib` `Remote` API, which has since been replaced, and not maintained since. It has no `package.json` and no tests, and it has not been run against the live network since. Kept for the record. See [docs/STATUS.md](docs/STATUS.md).
 
 # ripple-trust-line-js
 
@@ -15,8 +15,8 @@ On Ripple you cannot hold someone else's IOUs (say, silver, `XAG`) until you tel
 
 - One constructor, one `sign`, one `submit`
 - Connects to the public `s1.ripple.com` server over secure WebSocket (port 443)
-- Signs locally (`local_signing`), so the secret key never leaves your machine
-- The secret is cleared after the transaction is submitted, so one signing call serves one trust-line transaction
+- Signs locally (`local_signing`), so the secret key is not sent to the server (but `submit` logs `remote._secret` to the console; see [docs/STATUS.md](docs/STATUS.md))
+- Meant to use the secret for one trust-line transaction only: `submit` calls `remote.set_secret(null, null)` afterwards. **(inference)** with the 2013 `ripple-lib` that stores a secret for a `null` account rather than removing the one set for yours, so it may not clear it
 - Can list an account's existing trust lines (see the caveat in [docs/STATUS.md](docs/STATUS.md))
 
 ## Install
@@ -35,8 +35,8 @@ The original example had a missing comma; this is the corrected version.
 var TrustLine = require('./trust_line.js');
 
 var trustLine = new TrustLine({
-  account: 'rHKueQebtVU9cEamhBbMV8AEViqKjXcBcB',        // who is extending trust
-  counterparty: 'r4EwBWxrx5HxYRyisfGzMto3AT8FZiYdWk',   // who they trust
+  account: 'rYourAccountAddress...',                   // who is extending trust
+  counterparty: 'rIssuerAddress...',                   // who they trust
   currency: 'XAG',                                      // silver, as in my fiat gem
   amount: 10
 });
@@ -47,7 +47,7 @@ trustLine.sign(process.env.RIPPLE_SECRET_KEY).submit({
 });
 ```
 
-The addresses are public Ripple account addresses used as examples. The secret comes from the `RIPPLE_SECRET_KEY` environment variable and should never be written into source.
+The addresses are placeholders; put real Ripple account addresses there. The secret comes from the `RIPPLE_SECRET_KEY` environment variable and should never be written into source.
 
 ## How it works
 
@@ -82,7 +82,7 @@ AGENTS.md         notes for AI agents (CLAUDE.md points at it)
 
 - **2013-12-23, 14:53:** `TrustLine` abstraction and the first README.
 - **2013-12-23, 15:07:** README rationale, then "only allow secret to be used for one trust line transaction". Four commits in about 15 minutes, and that was all.
-- Written during my first weeks working on Ripple tooling; the `XAG` example echoes my earlier [fiat](https://github.com/stevenzeiler/fiat) gem, which tracked precious-metal prices.
+- Written during Steven's early Ripple tooling work **(inference)**; the `XAG` example echoes my earlier [fiat](https://github.com/stevenzeiler/fiat) gem, which tracked precious-metal prices.
 
 ---
 
